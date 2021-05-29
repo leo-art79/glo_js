@@ -1,8 +1,19 @@
-let money; // пока речь на шла о типах и значениях, надеюсь правильно))
-let incom;
-let addExpenses;
+let money = 500; // усiм папиццот!))
+let incom = 'ремонты';
+let addExpenses = 'Коммуналка, Интернет, Телефоны, Обслуживание авто, Обучение ребенка, ЕДА';
 let deposit = false; //подсмотрел назначение в следующем задании
-let mission;
-let period;
-alert('сообщение с любым текстом в алерт');
-console.log('сообщение с любым текстом в консоль'); 
+let mission = 10000;
+let period = 12;
+
+console.log('Тип money: ' + typeof (money)); 
+console.log('Тип incom: ' + typeof (incom)); 
+console.log('Тип deposit: ' + typeof (deposit)); 
+console.log('Длина строки addExpenses: ' + addExpenses.length + ' симв.'); // сокращал чтоб не морочиться с окончаниями)))
+console.log('Период равен ' + period + ' мес. \nЦель заработать $' + mission);
+
+addExpenses = addExpenses.toLowerCase();
+addExpenses = addExpenses.split(', '); 
+console.log(addExpenses); // если исходную строку менять не нужно,s то console.log(addExpenses.toLowerCase().split(', ')); 
+
+let budgetDay = money / 30;
+console.log('Дневной бюджет: $' + budgetDay.toFixed(2));
