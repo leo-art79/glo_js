@@ -1,5 +1,5 @@
 let money; // пока речь на шла о типах и значениях, надеюсь правильно))
-let incom;
+let income;
 let addExpenses;
 let deposit = false; //подсмотрел назначение в следующем задании
 let mission;
