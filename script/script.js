@@ -5,51 +5,98 @@ while (!money) {
     money = +prompt('Ваш месячный доход (р.):', '100000');
 }
 let income = 'ремонты';
+
+
 let addExpenses = prompt('Перечислите возможные расходы за рассчитываемый период через запятую', 'Коммуальные платежи, еда, другое');
 //если нажата "отмена", считаем, что расходов нет... Далее проверки не делал, т.к. они похожи (да и в задании не сказано) 
 if (!addExpenses) {
     addExpenses = '';
 }
+
+
+/*7) Почистить консоль логи и добавить недостающие, должны остаться:
+
+ - вызовы функции showTypeOf
+
+ - Расходы за месяц вызов getExpensesMonth
+
+ - Вывод возможных расходов в виде массива (addExpenses)
+
+ - Cрок достижения цели в месяцах (результат вызова функции getTargetMonth) 
+
+ - Бюджет на день (budgetDay)*/
+
+ 
+
+
 let deposit = confirm ('Есть ли у вас депозит в банке (если да, нажмите "OK")?');
 let mission = 1000000;//не было заданием спросить у пользователя, поэтому так и оставим
 let period = 12;
+const showTypeOf = function(variable){
+    console.log('Тип переменной, которая хранит ' + variable + ' - ' + typeof (variable)); 
+};
 
+showTypeOf(money);
+showTypeOf(income); 
+showTypeOf(deposit); 
 
-console.log('Тип money: ' + typeof (money)); 
-console.log('Тип income: ' + typeof (income)); 
-console.log('Тип deposit: ' + typeof (deposit)); 
-console.log('Длина строки addExpenses: ' + addExpenses.length + ' симв.'); // сокращал чтоб не морочиться с окончаниями)))
 console.log('Период равен ' + period + ' мес. \nЦель заработать ' + mission + ' р.');
 
 addExpenses = addExpenses.toLowerCase();
-addExpenses = addExpenses.split(', '); 
-console.log(addExpenses);  
+console.log(addExpenses.split(', '));  
 
-//просили задать каждый вопрос дважды:
-let expenses1 = prompt('Введите обязательную статью расходов?', 'Еда');
-let amount1 = +prompt('Во сколько это обойдется?', '15000');
-let expenses2 = prompt('Введите обязательную статью расходов?', 'Коммунальные платежи');
-let amount2 = +prompt('Во сколько это обойдется?', '2000');
+//1) Объявить функцию getExpensesMonth. Функция возвращает сумму всех (ВСЕХ, Карл!) обязательных расходов за месяц
+function getExpensesMonth(expense) {
+    let indexOfSeparator = expense.lastIndexOf(',', expense.length);
+    
+    if (expense.lastIndexOf(',', expense.length) < 0) {
+      return +prompt('Во сколько обходится (обходятся) ' + (expense.substr(indexOfSeparator + 1, expense.length)).trim().toLowerCase() + '?');
+      // проверку на дурака (не число) не делал, может исправлять придется
+    } else {
+        let amount = +prompt('Во сколько обходится (обходятся) ' + (expense.substr(indexOfSeparator + 1, expense.length)).trim().toLowerCase() + '?')
+        return amount + getExpensesMonth(expense.substr(0, indexOfSeparator)); 
+    }// если использовать addExpenses уже приведенную к неижнему регистру, то после трим тулоуэркейс не нужен
+  } //Почти красивая реккурсия))), но не чистая...
 
-//Вычислить бюджет на месяц, учитывая обязательные расходы
-let budgetMonth = money - (amount1 + amount2);
-console.log('Месячный бюджет: ' + budgetMonth + ' р.');
+// также можно вводить и доходы, если бы не отдельные переменные...
 
-//посчитать за сколько месяцев будет достигнута цель mission
-period = Math.ceil(mission/budgetMonth);
-console.log(period > 0 ? 'Цель будет достигнута через ' + period + ' мес.' : 'Цель недостижима...');
+//2) Объявить функцию getAccumulatedMonth. Функция возвращает Накопления за месяц (Доходы минус расходы)
 
-//Поправить budgetDay учитывая бюджет на месяц
-let budgetDay = Math.floor(budgetMonth / 30);
-console.log((budgetDay > 0 ? 'Дневной бюджет: ' : 'Ежедневный долг: ') + budgetDay + ' р.');
+const getAccumulatedMonth = function(incomes, expenses){
+    return incomes - expenses;
+};
 
-//Написать конструкцию условий
-if (budgetDay > 1200) {
-    console.log('У Вас высокий уровень дохода');
-} else if ((budgetDay <= 1200) && (budgetDay > 600)) {
-    console.log('У Вас средний уровень дохода');
-} else if ((budgetDay <= 600) && (budgetDay > 0)) {
-    console.log('К сожалению, у Вас уровень дохода ниже среднего');
-} else { 
-    console.log('Что-то пошло не так...')
+//3) Объявить переменную accumulatedMonth и присвоить ей результат вызова функции getAccumulatedMonth 
+let accumulatedMonth = getAccumulatedMonth (money, getExpensesMonth(addExpenses));
+console.log('Месячный бюджет: ' + accumulatedMonth + ' р.');
+
+//4) Объявить функцию getTargetMonth. Подсчитывает за какой период будет достигнута цель, зная результат месячного накопления (accumulatedMonth) и возвращает результат
+
+const getTargetMonth = function(target, budget){
+    return Math.ceil(target/budget);
+};
+
+console.log(getTargetMonth(mission, accumulatedMonth) > 0 ? 'Цель будет достигнута через ' + getTargetMonth(mission, accumulatedMonth) + ' мес.' : 'Цель недостижима...');
+
+//5) Удалить из кода переменную budgetMonth
+//6) budgetDay высчитываем исходя из значения месячного накопления (accumulatedMonth)
+
+let budgetDay = Math.floor(accumulatedMonth / 30);
+console.log((budgetDay >= 0 ? 'Дневной бюджет: ' : 'Ежедневный долг: ') + budgetDay + ' р.');
+
+//- вызов функции getStatusIncome 
+
+const getStatusIncome = function(budget){
+    if (budget > 1200) { //У Макса в примере более красивое сравнение, но я уже не списывал...
+        return 'У Вас высокий уровень дохода';
+    } else if ((budget <= 1200) && (budget > 600)) {
+        return 'У Вас средний уровень дохода';
+    } else if ((budget <= 600) && (budget > 0)) {
+        return 'К сожалению, у Вас уровень дохода ниже среднего';
+    } else { 
+        return 'Что-то пошло не так...';
+    }
+    
 }
+console.log(getStatusIncome(budgetDay));
+
