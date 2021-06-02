@@ -43,9 +43,11 @@ showTypeOf(deposit);
 console.log('Период равен ' + period + ' мес. \nЦель заработать ' + mission + ' р.');
 
 addExpenses = addExpenses.toLowerCase();
-console.log(addExpenses.split(', '));  
+addExpenses.split(', ');
+console.log(addExpenses);  
 
 //1) Объявить функцию getExpensesMonth. Функция возвращает сумму всех (ВСЕХ, Карл!) обязательных расходов за месяц
+/* эта функция не катит...
 function getExpensesMonth(expense) {
     let indexOfSeparator = expense.lastIndexOf(',', expense.length);
     
@@ -56,9 +58,21 @@ function getExpensesMonth(expense) {
         let amount = +prompt('Во сколько обходится (обходятся) ' + (expense.substr(indexOfSeparator + 1, expense.length)).trim().toLowerCase() + '?')
         return amount + getExpensesMonth(expense.substr(0, indexOfSeparator)); 
     }// если использовать addExpenses уже приведенную к неижнему регистру, то после трим тулоуэркейс не нужен
-  } //Почти красивая реккурсия))), но не чистая...
+  } //Почти красивая реккурсия))), но не чистая...*/
 
-// также можно вводить и доходы, если бы не отдельные переменные...
+function getExpensesMonth(expenses){
+    let amountOfExpenses, amount;
+    for (let i = 0; i < expenses.length; i++){
+        do {
+            amount = +prompt('Во сколько обходится (обходятся) ' + (expenses[i]) +' ?');
+            if (amount === NaN){
+                alert ('Введены некорректные данные! Введите число!');
+            }
+        } while (amount === NaN);
+        amountOfExpenses += amount;
+    }
+    return amountOfExpenses;
+}
 
 //2) Объявить функцию getAccumulatedMonth. Функция возвращает Накопления за месяц (Доходы минус расходы)
 
