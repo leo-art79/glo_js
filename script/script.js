@@ -80,6 +80,7 @@ function getExpensesMonth(expense) {
     }
 }
 
+//если это раскомментировать, работает как в видеоуроке
 
  /*   let amountOfExpenses = 0, amount;
     for (let i = 0; i < 4; i++){
